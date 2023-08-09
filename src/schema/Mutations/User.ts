@@ -50,24 +50,41 @@ export const DELETE_USER = {
 export const UPDATE_USER = {
     type: GraphQLBoolean,
     args: {
-        id: { type: GraphQLID },
+        codigo: { type: GraphQLID },
+        dni: { type: GraphQLString },
         names: { type: GraphQLString },
-        lastnames: { type: GraphQLString },
         age: { type: GraphQLInt },
         direction: { type: GraphQLString },
-        dni: { type: GraphQLString },
+        lastnames: { type: GraphQLString },
         email: { type: GraphQLString },
         password: { type: GraphQLString }
     },
-    async resolve(_: any, { id, names, lastnames, age, direction, dni, email, password }: any) {
-        console.log(id, names, lastnames, age, direction, dni, email, password);
+    async resolve(_: any, { id, dni, names, age, direction, lastnames, email, password }: any) {
+        try {
+            const userUpdate = await Users.findOneBy({ id });
 
-        const userFound = await Users.findOne(id)
+            if (!userUpdate) {
+                throw new Error(`Cliente con código ${id} no encontrado`);
+            }
 
-        const itsMach = await bcrypt.compare(password, userFound!.password)
+            if (password) {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                userUpdate.password = hashedPassword;
+            }
 
-        console.log(itsMach)
+            userUpdate.dni = dni;
+            userUpdate.names = names;
+            userUpdate.age = age;
+            userUpdate.direction = direction;
+            userUpdate.lastnames = lastnames;
+            userUpdate.email = email;
 
-        return false;
-    }
-}
+            await userUpdate.save();
+
+            return true;
+        } catch (error) {
+            console.error('Error al actualizar el cliente:', error);
+            return false;
+        }
+    },
+};
