@@ -50,7 +50,7 @@ export const DELETE_USER = {
 export const UPDATE_USER = {
     type: GraphQLBoolean,
     args: {
-        codigo: { type: GraphQLID },
+        id: { type: GraphQLID },
         dni: { type: GraphQLString },
         names: { type: GraphQLString },
         age: { type: GraphQLInt },
