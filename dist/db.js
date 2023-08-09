@@ -12,14 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.connectDB = void 0;
 const typeorm_1 = require("typeorm");
 const User_1 = require("./Entities/User");
+const config_1 = require("./config");
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, typeorm_1.createConnection)({
         type: 'mysql',
-        username: 'root',
-        password: '1234',
-        port: 3306,
-        host: 'localhost',
-        database: 'graphqlapi',
+        username: config_1.DB_USERNAME,
+        password: config_1.DB_PASSWORD,
+        port: Number(config_1.DB_PORT),
+        host: config_1.DB_HOST,
+        database: config_1.DB_NAME,
         entities: [User_1.Users],
         synchronize: false,
         ssl: false
